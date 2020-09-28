@@ -1,0 +1,21 @@
+version: "3.7"
+
+networks:
+  localhost:
+    external:
+      name: localhost
+
+services:
+  site:
+    image: docker.pkg.github.com/ajupov/crm.site/crm.site-local:latest
+    container_name: site
+    user: root
+    ports:
+      - 10000:10000
+
+  account:
+    image: docker.pkg.github.com/ajupov/crm.account/crm.account-local:latest
+    container_name: account
+    user: root
+    ports:
+      - 11000:11000

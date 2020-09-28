@@ -1,0 +1,66 @@
+version: "3.7"
+
+networks:
+  localhost:
+    external:
+      name: localhost
+
+services:
+  identity:
+    image: docker.pkg.github.com/ajupov/crm.identity/crm.identity:latest
+    container_name: identity
+    user: root
+    ports:
+      - 3000:3000
+    environment:
+      - ApplicationHost=http://*:3000
+      - LoggingHost=http://elastic:9200
+      - MetricsSettings:Host=localhost
+      - MetricsSettings:Port=3001
+      - IsSkipMigrations=false
+      - ConnectionStrings:MigrationsConnectionString=Host=postgres;Port=5432;Database=identity;Username=postgres;Password=postgres
+      - ConnectionStrings:HotStorageConnectionString=redis://id:redis@redis:6379?ssl=false&abortConnect=false
+      - OrmSettings:IsTestMode=false
+      - OrmSettings:MainConnectionString=Host=postgres;Port=5432;Database=identity;Username=postgres;Password=postgres
+      - OrmSettings:ReadonlyConnectionString=Host=postgres;Port=5432;Database=identity;Username=postgres;Password=postgres
+      - JwtValidatorSettings:Audience=
+      - JwtValidatorSettings:SigningKey=C59A10DF-962F-411F-A8B1-3362E43C2784
+      - MailSendingSettings:IsTestMode=true
+      - MailSendingSettings:SMTPPORT=0
+      - SmsSendingSettings:IsTestMode=true
+      - VerifyEmailSettings:VerifyUriPattern=http://localhost:3000/oauth/verifyemail?TokenId={0}&Code={1}
+      - ResetPasswordSettings:ResetUriPattern=http://localhost:3000/oauth/resetpasswordconfirmation?TokenId={0}&Code={1}
+    networks:
+      - localhost
+
+  apps:
+    image: docker.pkg.github.com/ajupov/crm.apps/crm.apps:latest
+    container_name: apps
+    user: root
+    ports:
+      - 9000:9000
+    environment:
+      - ApplicationHost=http://*:9000
+      - AllowedCorsOrigin=http://localhost:11000
+      - LoggingHost=http://elastic:9200
+      - MetricsSettings:Host=localhost
+      - MetricsSettings:Port=9001
+      - IsSkipMigrations=false
+      - ConnectionStrings:MigrationsConnectionString=Host=postgres;Port=5432;Database=apps;Username=postgres;Password=postgres
+      - OrmSettings:IsTestMode=false
+      - OrmSettings:MainConnectionString=Host=postgres;Port=5432;Database=apps;Username=postgres;Password=postgres
+      - OrmSettings:ReadonlyConnectionString=Host=postgres;Port=5432;Database=apps;Username=postgres;Password=postgres
+      - JwtValidatorSettings:Audience=localhost:9000
+      - JwtValidatorSettings:SigningKey=C59A10DF-962F-411F-A8B1-3362E43C2784
+      - LiteCrmOAuthOptions:ClientId=site-local
+      - LiteCrmOAuthOptions:ClientSecret=site-local
+      - LiteCrmOAuthOptions:Scopes=api
+      - LiteCrmOAuthOptions:LoginPath=/Auth/Login
+      - LiteCrmOAuthOptions:CallbackPath=/Auth/Callback
+      - LiteCrmOAuthOptions:AuthorizationUrl=http://localhost:3000/OAuth/Authorize
+      - LiteCrmOAuthOptions:UserInfoUrl=http://identity:3000/OAuth/UserInfo
+      - LiteCrmOAuthOptions:TokenUrl=http://identity:3000/OAuth/Token
+      - AuthSettings:AccountUrl=http://localhost:11000
+      - AuthSettings:SiteUrl=http://localhost:10000
+    networks:
+      - localhost
