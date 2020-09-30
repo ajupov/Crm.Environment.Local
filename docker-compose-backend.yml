@@ -13,6 +13,7 @@ services:
     ports:
       - 3000:3000
     environment:
+      - AspNetCore_Environment=Development
       - ApplicationHost=http://*:3000
       - LoggingHost=http://elastic:9200
       - MetricsSettings:Host=localhost
@@ -40,6 +41,7 @@ services:
     ports:
       - 9000:9000
     environment:
+      - AspNetCore_Environment=Development
       - ApplicationHost=http://*:9000
       - AllowedCorsOrigin=http://localhost:11000
       - LoggingHost=http://elastic:9200
