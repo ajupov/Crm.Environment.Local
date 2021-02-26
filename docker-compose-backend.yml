@@ -14,7 +14,7 @@ services:
       - 3000:3000
     environment:
       - AspNetCore_Environment=Development
-      - ApplicationHost=http://*:3000
+      - ApplicationHost=https://*:3000
       - LoggingHost=http://elastic:9200
       - MetricsSettings:Host=localhost
       - MetricsSettings:Port=3001
@@ -29,8 +29,8 @@ services:
       - MailSendingSettings:IsTestMode=true
       - MailSendingSettings:SMTPPORT=0
       - SmsSendingSettings:IsTestMode=true
-      - VerifyEmailSettings:VerifyUriPattern=http://localhost:3000/oauth/verifyemail?TokenId={0}&Code={1}
-      - ResetPasswordSettings:ResetUriPattern=http://localhost:3000/oauth/resetpasswordconfirmation?TokenId={0}&Code={1}
+      - VerifyEmailSettings:VerifyUriPattern=https://localhost:3000/oauth/verifyemail?TokenId={0}&Code={1}
+      - ResetPasswordSettings:ResetUriPattern=https://localhost:3000/oauth/resetpasswordconfirmation?TokenId={0}&Code={1}
     networks:
       - localhost
 
@@ -42,8 +42,8 @@ services:
       - 9000:9000
     environment:
       - AspNetCore_Environment=Development
-      - ApplicationHost=http://*:9000
-      - AllowedCorsOrigin=http://localhost:11000
+      - ApplicationHost=https://*:9000
+      - AllowedCorsOrigin=https://localhost:11000
       - LoggingHost=http://elastic:9200
       - MetricsSettings:Host=localhost
       - MetricsSettings:Port=9001
@@ -59,10 +59,10 @@ services:
       - LiteCrmOAuthOptions:Scopes=api
       - LiteCrmOAuthOptions:LoginPath=/Auth/Login
       - LiteCrmOAuthOptions:CallbackPath=/Auth/Callback
-      - LiteCrmOAuthOptions:AuthorizationUrl=http://localhost:3000/OAuth/Authorize
-      - LiteCrmOAuthOptions:UserInfoUrl=http://identity:3000/OAuth/UserInfo
-      - LiteCrmOAuthOptions:TokenUrl=http://identity:3000/OAuth/Token
-      - AuthSettings:AccountUrl=http://localhost:11000
-      - AuthSettings:SiteUrl=http://localhost:10000
+      - LiteCrmOAuthOptions:AuthorizationUrl=https://localhost:3000/OAuth/Authorize
+      - LiteCrmOAuthOptions:UserInfoUrl=https://identity:3000/OAuth/UserInfo
+      - LiteCrmOAuthOptions:TokenUrl=https://identity:3000/OAuth/Token
+      - AuthSettings:AccountUrl=https://localhost:11000
+      - AuthSettings:SiteUrl=https://localhost:10000
     networks:
       - localhost
